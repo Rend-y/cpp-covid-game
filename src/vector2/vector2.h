@@ -16,6 +16,14 @@ public:
 
     vector2 operator-(vector2 value);
 
+    vector2 operator*(vector2 value);
+
+    vector2 operator/(vector2 value);
+
+    vector2 operator*(int value);
+
+    vector2 operator/(int value);
+
     bool operator==(vector2 equal);
 
     bool operator!=(vector2 equal);

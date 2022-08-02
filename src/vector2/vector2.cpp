@@ -32,6 +32,26 @@ vector2 vector2::operator-(vector2 value)
     return vector2(this->x - value.x, this->y - value.y);
 }
 
+vector2 vector2::operator*(vector2 value)
+{
+    return vector2(this->x * value.x, this->y * value.y);
+}
+
+vector2 vector2::operator/(vector2 value)
+{
+    return vector2(this->x / value.x, this->y / value.y);
+}
+
+vector2 vector2::operator*(int value)
+{
+    return vector2(this->x / value, this->y / value);
+}
+
+vector2 vector2::operator/(int value)
+{
+    return vector2(this->x / value, this->y / value);
+}
+
 bool vector2::operator==(vector2 equal)
 {
     return (this->x == equal.x && this->y == equal.y);
