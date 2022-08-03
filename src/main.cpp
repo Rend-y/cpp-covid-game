@@ -1,7 +1,14 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
 #include "vector2/vector2.h"
+#include <thread>
+#include "utilities/utilities.h"
+
+vector2 screen_size = vector2(80, 20);
 
 void input_cmd_yes_or_no(std::string question, bool *result)
 {
@@ -14,24 +21,6 @@ void input_cmd_yes_or_no(std::string question, bool *result)
         *result = false;
     else
         *result = false;
-}
-
-void console_pause()
-{
-#ifdef _WIN32
-    system("pause");
-#else
-    system("read");
-#endif
-}
-
-void clear_screen()
-{
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
 }
 
 bool draw_string(std::string text, vector2 position_draw, int *current_position_x, int *current_position_y, bool is_centered)
@@ -50,33 +39,73 @@ bool draw_string(std::string text, vector2 position_draw, int *current_position_
     return true;
 }
 
-int main(int, char **)
+void draw_main_menu()
 {
-    bool eddit_setting_screen = false;
-    vector2 screen_size = vector2(0, 0);
-    while (!eddit_setting_screen)
+    bool is_active_menu = true;
+    while (is_active_menu)
     {
-        std::printf("Please input your cmd size...\n");
-        std::cin >> screen_size.x >> screen_size.y;
-        input_cmd_yes_or_no("Is his screen size " + std::to_string(screen_size.x) + "x" + std::to_string(screen_size.y) + " exactly right ?", &eddit_setting_screen);
-        if (eddit_setting_screen && (screen_size.x % 2 != 0))
-            screen_size.y += 1;
-    }
-    clear_screen();
-    for (int y = 0; y < screen_size.y; y++)
-    {
-        for (int x = 0; x < screen_size.x; x++)
+        utilities::cmd::clear();
+        for (int y = 0; y < screen_size.y; y++)
         {
-            bool is_draw_start_game = draw_string("start game", (screen_size / 2) - vector2(0, 1), &x, &y, true);
-            bool is_draw_exit = draw_string("close", (screen_size / 2) + vector2(0, 1), &x, &y, true);
-            if (!is_draw_exit || !is_draw_start_game)
+            for (int x = 0; x < screen_size.x; x++)
             {
+                draw_string("start game", (screen_size / 2) - vector2(0, 1), &x, &y, true);
+                draw_string("close", (screen_size / 2) + vector2(0, 1), &x, &y, true);
                 if ((y == screen_size.y - 1 || y == 0) || (x == screen_size.x - 1 || x == 0))
                     std::printf("█");
                 else
                     std::printf(" ");
             }
+            std::printf("\n");
         }
-        std::printf("\n");
     }
+}
+
+void draw_main_level()
+{
+    bool is_dead = false;
+    while (!is_dead)
+    {
+        utilities::cmd::clear();
+        for (int y = 0; y < screen_size.y; y++)
+        {
+            for (int x = 0; x < screen_size.x; x++)
+            {
+                std::string number_points = "number of points : 10";
+                std::string currents_health = "currents health : 100%";
+                std::string current_stamina = "current stamina : 100%";
+                draw_string(number_points, vector2(5, 2), &x, &y, false);
+                draw_string(currents_health, vector2(screen_size.x - (5 + currents_health.length()), 2), &x, &y, false);
+                draw_string(current_stamina, vector2(screen_size.x - (7 + currents_health.length() + current_stamina.length()), 2), &x, &y, false);
+                if ((y == screen_size.y - 1 || y == 0 || y == 4) || (x == screen_size.x - 1 || x == 0))
+                    std::printf("█");
+                else
+                    std::printf(" ");
+            }
+            std::printf("\n");
+        }
+    }
+}
+
+int main(int, char **)
+{
+    bool eddit_setting_screen = false;
+    while (!eddit_setting_screen)
+    {
+        std::printf("Please input your cmd size...\n");
+        std::cin >> screen_size.x >> screen_size.y;
+        if (screen_size.x < 80)
+        {
+            std::printf("Sorry, minimum screen width is 80. Please enter again.\n");
+            utilities::cmd::pause();
+            utilities::cmd::clear();
+            continue;
+        }
+        input_cmd_yes_or_no("Is his screen size " + std::to_string(screen_size.x) + "x" + std::to_string(screen_size.y) + " exactly right ?", &eddit_setting_screen);
+        if (eddit_setting_screen && (screen_size.x % 2 != 0))
+            screen_size.y += 1;
+    }
+    utilities::cmd::clear();
+    draw_main_menu();
+    draw_main_level();
 }
