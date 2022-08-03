@@ -23,6 +23,17 @@ void input_cmd_yes_or_no(std::string question, bool *result)
         *result = false;
 }
 
+/**
+ * @brief Use this to render text by position on screen and sing axis x and y new value (position) by calculate end point a text
+ *
+ * @param text text to draw on screen
+ * @param position_draw position to draw on screen
+ * @param current_position_x current position axis x on screen
+ * @param current_position_y current position axis y on screen
+ * @param is_centered Centered position rendering text
+ * @return true text has been rendered correctly
+ * @return false text hasn't been rendered
+ */
 bool draw_string(std::string text, vector2 position_draw, int *current_position_x, int *current_position_y, bool is_centered)
 {
     vector2 text_size = vector2(text.length(), 0);
