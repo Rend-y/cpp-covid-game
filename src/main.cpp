@@ -2,10 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
 #include "vector2/vector2.h"
-#include <thread>
 #include "utilities/utilities.h"
 
 vector2 screen_size = vector2(80, 20);
@@ -53,6 +50,7 @@ bool draw_string(std::string text, vector2 position_draw, int *current_position_
 void draw_main_menu()
 {
     bool is_active_menu = true;
+    int menu_page = 0;
     while (is_active_menu)
     {
         utilities::cmd::clear();
@@ -60,10 +58,33 @@ void draw_main_menu()
         {
             for (int x = 0; x < screen_size.x; x++)
             {
-                draw_string("start game", (screen_size / 2) - vector2(0, 1), &x, &y, true);
-                draw_string("close", (screen_size / 2) + vector2(0, 1), &x, &y, true);
+                if (utilities::is_key_present(38))
+                    menu_page++;
+                if (utilities::is_key_present(40))
+                    menu_page--;
+
+                if (utilities::is_key_present(13))
+                {
+                    switch (menu_page)
+                    {
+                    case 0:
+                        is_active_menu = false;
+                        break;
+                    case 1:
+                        exit(0);
+                        break;
+                    }
+                }
+
+                if (menu_page > 1)
+                    menu_page = 0;
+                else if (menu_page < 0)
+                    menu_page = 1;
+
+                draw_string(menu_page == 0 ? "> start game" : "start game", (screen_size / 2) - vector2(0, 1), &x, &y, true);
+                draw_string(menu_page == 1 ? "> close" : "close", (screen_size / 2) + vector2(0, 1), &x, &y, true);
                 if ((y == screen_size.y - 1 || y == 0) || (x == screen_size.x - 1 || x == 0))
-                    std::printf("█");
+                    std::printf("#");
                 else
                     std::printf(" ");
             }
@@ -89,7 +110,7 @@ void draw_main_level()
                 draw_string(currents_health, vector2(screen_size.x - (5 + currents_health.length()), 2), &x, &y, false);
                 draw_string(current_stamina, vector2(screen_size.x - (7 + currents_health.length() + current_stamina.length()), 2), &x, &y, false);
                 if ((y == screen_size.y - 1 || y == 0 || y == 4) || (x == screen_size.x - 1 || x == 0))
-                    std::printf("█");
+                    std::printf("#");
                 else
                     std::printf(" ");
             }
@@ -100,23 +121,23 @@ void draw_main_level()
 
 int main(int, char **)
 {
-    bool eddit_setting_screen = false;
-    while (!eddit_setting_screen)
-    {
-        std::printf("Please input your cmd size...\n");
-        std::cin >> screen_size.x >> screen_size.y;
-        if (screen_size.x < 80)
-        {
-            std::printf("Sorry, minimum screen width is 80. Please enter again.\n");
-            utilities::cmd::pause();
-            utilities::cmd::clear();
-            continue;
-        }
-        input_cmd_yes_or_no("Is his screen size " + std::to_string(screen_size.x) + "x" + std::to_string(screen_size.y) + " exactly right ?", &eddit_setting_screen);
-        if (eddit_setting_screen && (screen_size.x % 2 != 0))
-            screen_size.y += 1;
-    }
-    utilities::cmd::clear();
+    // bool eddit_setting_screen = false;
+    // while (!eddit_setting_screen)
+    // {
+    //     std::printf("Please input your cmd size...\n");
+    //     std::cin >> screen_size.x >> screen_size.y;
+    //     if (screen_size.x < 80)
+    //     {
+    //         std::printf("Sorry, minimum screen width is 80. Please enter again.\n");
+    //         utilities::cmd::pause();
+    //         utilities::cmd::clear();
+    //         continue;
+    //     }
+    //     input_cmd_yes_or_no("Is his screen size " + std::to_string(screen_size.x) + "x" + std::to_string(screen_size.y) + " exactly right ?", &eddit_setting_screen);
+    //     if (eddit_setting_screen && (screen_size.x % 2 != 0))
+    //         screen_size.y += 1;
+    // }
+    // utilities::cmd::clear();
     draw_main_menu();
     draw_main_level();
 }
