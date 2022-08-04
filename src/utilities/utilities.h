@@ -25,6 +25,8 @@ namespace utilities
          */
         void clear();
 
+        void set_cursor_position(int x, int y);
+
         /**
          * @brief Use this for putting console on pause and waiting to enter any commands
          *

@@ -1,18 +1,21 @@
+#pragma once
 #include "../vector2/vector2.h"
+#include <string>
 
 class player
 {
 private:
-    int health = 100;
-    int stamina = 100;
-
     int damage_points = 25;
-    int speed_devastation_stamina = 5;
+    float speed_devastation_stamina = 0.5f;
     int adding_stamina_when_eating = 10;
 
-    vector2 player_position = vector2(0, 0);
+    std::string player_on_the_screen = "&";
 
 public:
+    int health = 100;
+    float stamina = 100;
+    vector2 player_position = vector2(5, 5);
+
     /**
      * @brief This is a sides to move
      *
@@ -51,6 +54,8 @@ public:
      *
      */
     void rais_stamina();
+
+    void draw_player();
 
     /**
      * @brief use this to the added player eat (stamina)

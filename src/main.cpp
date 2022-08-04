@@ -2,8 +2,8 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
-#include "vector2/vector2.h"
 #include "utilities/utilities.h"
+#include "player/player.h"
 
 vector2 screen_size = vector2(80, 20);
 
@@ -96,16 +96,29 @@ void draw_main_menu()
 void draw_main_level()
 {
     bool is_dead = false;
+    player local_player = player();
+
     while (!is_dead)
     {
+        if (utilities::is_key_present(87) || utilities::is_key_present(119))
+            local_player.set_direction_movement(player::direction_move::forward);
+        if (utilities::is_key_present(68) || utilities::is_key_present(100))
+            local_player.set_direction_movement(player::direction_move::to_the_right);
+        if (utilities::is_key_present(83) || utilities::is_key_present(115))
+            local_player.set_direction_movement(player::direction_move::back);
+        if (utilities::is_key_present(65) || utilities::is_key_present(97))
+            local_player.set_direction_movement(player::direction_move::to_the_left);
+
+        local_player.rais_stamina();
+
         utilities::cmd::clear();
         for (int y = 0; y < screen_size.y; y++)
         {
             for (int x = 0; x < screen_size.x; x++)
             {
                 std::string number_points = "number of points : 10";
-                std::string currents_health = "currents health : 100%";
-                std::string current_stamina = "current stamina : 100%";
+                std::string currents_health = "currents health : " + std::to_string(local_player.health) + "%";
+                std::string current_stamina = "current stamina : " + std::to_string(static_cast<int>(local_player.stamina)) + "%";
                 draw_string(number_points, vector2(5, 2), &x, &y, false);
                 draw_string(currents_health, vector2(screen_size.x - (5 + currents_health.length()), 2), &x, &y, false);
                 draw_string(current_stamina, vector2(screen_size.x - (7 + currents_health.length() + current_stamina.length()), 2), &x, &y, false);
@@ -116,6 +129,8 @@ void draw_main_level()
             }
             std::printf("\n");
         }
+        utilities::cmd::set_cursor_position(local_player.player_position.x, local_player.player_position.y);
+        local_player.draw_player();
     }
 }
 
@@ -138,6 +153,6 @@ int main(int, char **)
     //         screen_size.y += 1;
     // }
     // utilities::cmd::clear();
-    draw_main_menu();
+    // draw_main_menu();
     draw_main_level();
 }
