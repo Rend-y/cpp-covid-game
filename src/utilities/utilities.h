@@ -1,5 +1,12 @@
 namespace utilities
 {
+    /**
+     * @brief use this to processing key down events
+     *
+     * @param key_code button code to ASCII
+     * @return true button has been pressed
+     * @return false button hasn't been pressed
+     */
     bool is_key_present(int key_code);
 
     /**
