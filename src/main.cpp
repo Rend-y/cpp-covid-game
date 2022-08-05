@@ -1,9 +1,13 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include <stdio.h>
-#include "utilities/utilities.h"
+#include <vector>
 #include "player/player.h"
+#include "entity/entity.h"
+#include "utilities/utilities.h"
+#include <Windows.h>
 
 vector2 screen_size = vector2(80, 20);
 
@@ -95,11 +99,23 @@ void draw_main_menu()
 
 void draw_main_level()
 {
+    int game_tick = 0;
+    int spawn_object_tick = 100;
+    std::vector<entity> entity_list;
     bool is_dead = false;
     player local_player = player();
 
     while (!is_dead)
     {
+        game_tick++;
+
+        if (game_tick >= spawn_object_tick)
+        {
+            spawn_object_tick = game_tick + 100;
+            vector2 new_entity_position = vector2(utilities::generate_random_number(1, screen_size.x - 1), utilities::generate_random_number(6, screen_size.y - 1));
+            entity_list.push_back(entity(new_entity_position, utilities::generate_random_number<int>(0, 1) ? true : false, game_tick));
+        }
+
         if (utilities::is_key_present(87) || utilities::is_key_present(119))
             local_player.set_direction_movement(player::direction_move::forward);
         if (utilities::is_key_present(68) || utilities::is_key_present(100))
@@ -129,8 +145,30 @@ void draw_main_level()
             }
             std::printf("\n");
         }
-        utilities::cmd::set_cursor_position(local_player.player_position.x, local_player.player_position.y);
         local_player.draw_player();
+
+        for (int i = 0; i < entity_list.size(); i++)
+        {
+            entity eat = entity_list[i];
+            if (eat.is_destroy)
+                continue;
+
+            if (eat.time_creat + eat.time_to_rotten <= game_tick)
+                eat.is_dangerous = true;
+
+            if (eat.entity_position == local_player.player_position)
+            {
+                if (eat.is_dangerous)
+                    local_player.get_damage();
+                else
+                    local_player.eats_food();
+
+                eat.is_destroy = true;
+                continue;
+            }
+
+            eat.draw_entity();
+        }
     }
 }
 

@@ -55,6 +55,10 @@ public:
      */
     void rais_stamina();
 
+    /**
+     * @brief use this to draw the player in the console
+     *
+     */
     void draw_player();
 
     /**

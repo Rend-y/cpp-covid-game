@@ -17,9 +17,10 @@ void vector2::operator-=(vector2 new_value)
     this->y -= new_value.y;
 }
 
-vector2 vector2::operator=(vector2 new_value)
+void vector2::operator=(vector2 new_value)
 {
-    return vector2(this->x, this->y);
+    this->x = new_value.x;
+    this->y = new_value.y;
 }
 
 vector2 vector2::operator+(vector2 value)

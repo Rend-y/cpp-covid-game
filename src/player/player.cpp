@@ -1,5 +1,6 @@
 #include "player.h"
 #include <iostream>
+#include "../utilities/utilities.h"
 
 void player::get_damage()
 {
@@ -40,6 +41,7 @@ void player::set_direction_movement(player::direction_move to_move)
 
 void player::draw_player()
 {
+    utilities::cmd::set_cursor_position(this->player_position.x, this->player_position.y);
     std::printf("%s", this->player_on_the_screen.c_str());
 }
 
