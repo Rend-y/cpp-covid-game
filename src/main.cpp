@@ -111,9 +111,10 @@ void draw_main_level()
 
         if (game_tick >= spawn_object_tick)
         {
-            spawn_object_tick = game_tick + 100;
+            int get_random_time_to_spawn = utilities::generate_random_number(15, 100);
+            spawn_object_tick = game_tick + get_random_time_to_spawn;
             vector2 new_entity_position = vector2(utilities::generate_random_number(1, screen_size.x - 1), utilities::generate_random_number(6, screen_size.y - 1));
-            entity_list.push_back(entity(new_entity_position, utilities::generate_random_number<int>(0, 1) ? true : false, game_tick));
+            entity_list.push_back(entity(new_entity_position, static_cast<float>(utilities::generate_random_number<int>(1, 100) / 100) > 0.75f ? true : false, game_tick));
         }
 
         if (utilities::is_key_present(87) || utilities::is_key_present(119))
@@ -132,7 +133,7 @@ void draw_main_level()
         {
             for (int x = 0; x < screen_size.x; x++)
             {
-                std::string number_points = "number of points : 10";
+                std::string number_points = "number of points : " + std::to_string(local_player.player_point);
                 std::string currents_health = "currents health : " + std::to_string(local_player.health) + "%";
                 std::string current_stamina = "current stamina : " + std::to_string(static_cast<int>(local_player.stamina)) + "%";
                 draw_string(number_points, vector2(5, 2), &x, &y, false);
@@ -149,25 +150,21 @@ void draw_main_level()
 
         for (int i = 0; i < entity_list.size(); i++)
         {
-            entity eat = entity_list[i];
-            if (eat.is_destroy)
-                continue;
+            if (entity_list[i].time_creat + entity_list[i].time_to_rotten <= game_tick)
+                entity_list[i].is_dangerous = true;
 
-            if (eat.time_creat + eat.time_to_rotten <= game_tick)
-                eat.is_dangerous = true;
-
-            if (eat.entity_position == local_player.player_position)
+            if (entity_list[i].entity_position == local_player.player_position)
             {
-                if (eat.is_dangerous)
+                if (entity_list[i].is_dangerous)
                     local_player.get_damage();
                 else
                     local_player.eats_food();
 
-                eat.is_destroy = true;
+                entity_list.erase(entity_list.begin() + i);
                 continue;
             }
 
-            eat.draw_entity();
+            entity_list[i].draw_entity();
         }
     }
 }

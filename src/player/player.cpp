@@ -4,6 +4,7 @@
 
 void player::get_damage()
 {
+    this->player_point -= 5;
     this->health -= this->damage_points;
 }
 
@@ -19,22 +20,30 @@ void player::rais_stamina()
 
 void player::set_direction_movement(player::direction_move to_move)
 {
+    int result_player_speed = 1;
+    if (this->stamina >= 75)
+        result_player_speed = player::player_speed::when_not_hungry;
+    else if (this->stamina >= 50)
+        result_player_speed = player::player_speed::default;
+    else
+        result_player_speed = player::player_speed::when_hungry;
+
     switch (to_move)
     {
     case player::direction_move::forward:
         if (this->player_position.y > 5)
-            this->player_position -= vector2(0, 1);
+            this->player_position -= vector2(0, result_player_speed);
         break;
     case player::direction_move::to_the_right:
-        this->player_position += vector2(1, 0);
+        this->player_position += vector2(result_player_speed, 0);
         break;
     case player::direction_move::back:
 
-        this->player_position += vector2(0, 1);
+        this->player_position += vector2(0, result_player_speed);
         break;
     case player::direction_move::to_the_left:
         if (this->player_position.x > 1)
-            this->player_position -= vector2(1, 0);
+            this->player_position -= vector2(result_player_speed, 0);
         break;
     }
 }
@@ -47,5 +56,6 @@ void player::draw_player()
 
 void player::eats_food()
 {
+    this->player_point += 1;
     this->stamina += this->adding_stamina_when_eating;
 }

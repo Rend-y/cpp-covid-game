@@ -6,12 +6,13 @@ class player
 {
 private:
     int damage_points = 25;
-    float speed_devastation_stamina = 0.5f;
+    float speed_devastation_stamina = 0.25f;
     int adding_stamina_when_eating = 10;
 
     std::string player_on_the_screen = "&";
 
 public:
+    int player_point = 0;
     int health = 100;
     float stamina = 100;
     vector2 player_position = vector2(5, 5);
@@ -26,6 +27,13 @@ public:
         to_the_right,
         back,
         to_the_left,
+    };
+
+    enum player_speed
+    {
+        when_not_hungry = 2,
+        default = 1,
+        when_hungry = 1,
     };
 
     /**
