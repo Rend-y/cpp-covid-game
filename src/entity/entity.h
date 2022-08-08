@@ -13,11 +13,13 @@ public:
     vector2 entity_position = vector2(0, 0);
     bool is_dangerous = false;
 
-    entity(vector2 entity_position, bool is_dangerous, int time_creat) : time_to_rotten(utilities::generate_random_number(100, 300)), entity_position(entity_position), is_dangerous(is_dangerous), time_creat(time_creat) {}
+    entity(bool is_dangerous, int time_creat) : time_to_rotten(utilities::generate_random_number(100, 300)), entity_position(generate_random_spawn_position()), is_dangerous(is_dangerous), time_creat(time_creat) {}
 
     /**
      * @brief use this to draw the eat in the console
      *
      */
     void draw_entity();
+
+    vector2 generate_random_spawn_position();
 };

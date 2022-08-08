@@ -7,9 +7,8 @@
 #include "player/player.h"
 #include "entity/entity.h"
 #include "utilities/utilities.h"
+#include "game_configuration.h"
 #include <Windows.h>
-
-vector2 screen_size = vector2(80, 20);
 
 void input_cmd_yes_or_no(std::string question, bool *result)
 {
@@ -22,33 +21,6 @@ void input_cmd_yes_or_no(std::string question, bool *result)
         *result = false;
     else
         *result = false;
-}
-
-/**
- * @brief Use this to render text by position on screen and sing axis x and y new value (position) by calculate end point a text
- *
- * @param text text to draw on screen
- * @param position_draw position to draw on screen
- * @param current_position_x current position axis x on screen
- * @param current_position_y current position axis y on screen
- * @param is_centered Centered position rendering text
- * @return true text has been rendered correctly
- * @return false text hasn't been rendered
- */
-bool draw_string(std::string text, vector2 position_draw, int *current_position_x, int *current_position_y, bool is_centered)
-{
-    vector2 text_size = vector2(text.length(), 0);
-    vector2 calculate_text_to_center = position_draw - (text_size / 2);
-    vector2 current_position = vector2(*current_position_x, *current_position_y);
-    if (is_centered && current_position != calculate_text_to_center)
-        return false;
-
-    if (!is_centered && current_position != position_draw)
-        return false;
-
-    *current_position_x += text_size.x;
-    std::printf("%s", text.c_str());
-    return true;
 }
 
 void draw_main_menu()
@@ -85,8 +57,8 @@ void draw_main_menu()
                 else if (menu_page < 0)
                     menu_page = 1;
 
-                draw_string(menu_page == 0 ? "> start game" : "start game", (screen_size / 2) - vector2(0, 1), &x, &y, true);
-                draw_string(menu_page == 1 ? "> close" : "close", (screen_size / 2) + vector2(0, 1), &x, &y, true);
+                utilities::cmd::draw_string(menu_page == 0 ? "> start game" : "start game", (screen_size / 2) - vector2(0, 1), &x, &y, true);
+                utilities::cmd::draw_string(menu_page == 1 ? "> close" : "close", (screen_size / 2) + vector2(0, 1), &x, &y, true);
                 if ((y == screen_size.y - 1 || y == 0) || (x == screen_size.x - 1 || x == 0))
                     std::printf("#");
                 else
@@ -99,8 +71,6 @@ void draw_main_menu()
 
 void draw_main_level()
 {
-    int game_tick = 0;
-    int spawn_object_tick = 100;
     std::vector<entity> entity_list;
     bool is_dead = false;
     player local_player = player();
@@ -113,8 +83,7 @@ void draw_main_level()
         {
             int get_random_time_to_spawn = utilities::generate_random_number(15, 100);
             spawn_object_tick = game_tick + get_random_time_to_spawn;
-            vector2 new_entity_position = vector2(utilities::generate_random_number(1, screen_size.x - 1), utilities::generate_random_number(6, screen_size.y - 1));
-            entity_list.push_back(entity(new_entity_position, static_cast<float>(utilities::generate_random_number<int>(1, 100) / 100) > 0.75f ? true : false, game_tick));
+            entity_list.push_back(entity(static_cast<float>(utilities::generate_random_number<int>(1, 100) / 100) > 0.75f ? true : false, game_tick));
         }
 
         if (utilities::is_key_present(87) || utilities::is_key_present(119))
@@ -136,9 +105,9 @@ void draw_main_level()
                 std::string number_points = "number of points : " + std::to_string(local_player.player_point);
                 std::string currents_health = "currents health : " + std::to_string(local_player.health) + "%";
                 std::string current_stamina = "current stamina : " + std::to_string(static_cast<int>(local_player.stamina)) + "%";
-                draw_string(number_points, vector2(5, 2), &x, &y, false);
-                draw_string(currents_health, vector2(screen_size.x - (5 + currents_health.length()), 2), &x, &y, false);
-                draw_string(current_stamina, vector2(screen_size.x - (7 + currents_health.length() + current_stamina.length()), 2), &x, &y, false);
+                utilities::cmd::draw_string(number_points, vector2(5, 2), &x, &y, false);
+                utilities::cmd::draw_string(currents_health, vector2(screen_size.x - (5 + currents_health.length()), 2), &x, &y, false);
+                utilities::cmd::draw_string(current_stamina, vector2(screen_size.x - (7 + currents_health.length() + current_stamina.length()), 2), &x, &y, false);
                 if ((y == screen_size.y - 1 || y == 0 || y == 4) || (x == screen_size.x - 1 || x == 0))
                     std::printf("#");
                 else

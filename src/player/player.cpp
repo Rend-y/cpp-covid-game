@@ -1,6 +1,7 @@
 #include "player.h"
 #include <iostream>
 #include "../utilities/utilities.h"
+#include "../game_configuration.h"
 
 void player::get_damage()
 {
@@ -35,11 +36,12 @@ void player::set_direction_movement(player::direction_move to_move)
             this->player_position -= vector2(0, result_player_speed);
         break;
     case player::direction_move::to_the_right:
-        this->player_position += vector2(result_player_speed, 0);
+        if (this->player_position.x + result_player_speed < screen_size.x)
+            this->player_position += vector2(result_player_speed, 0);
         break;
     case player::direction_move::back:
-
-        this->player_position += vector2(0, result_player_speed);
+        if (this->player_position.y + result_player_speed < screen_size.y)
+            this->player_position += vector2(0, result_player_speed);
         break;
     case player::direction_move::to_the_left:
         if (this->player_position.x > 1)
