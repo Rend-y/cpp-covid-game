@@ -57,6 +57,10 @@ public:
      */
     void get_damage();
 
+    bool is_dead();
+
+    void move_handler();
+
     /**
      * @brief use this to the remove player eat (stamina)
      *

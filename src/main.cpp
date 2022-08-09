@@ -71,31 +71,15 @@ void draw_main_menu()
 
 void draw_main_level()
 {
-    std::vector<entity> entity_list;
-    bool is_dead = false;
     player local_player = player();
 
-    while (!is_dead)
+    while (local_player.is_dead())
     {
         game_tick++;
-
-        if (game_tick >= spawn_object_tick)
-        {
-            int get_random_time_to_spawn = utilities::generate_random_number(15, 100);
-            spawn_object_tick = game_tick + get_random_time_to_spawn;
-            entity_list.push_back(entity(static_cast<float>(utilities::generate_random_number<int>(1, 100) / 100) > 0.75f ? true : false, game_tick));
-        }
-
-        if (utilities::is_key_present(87) || utilities::is_key_present(119))
-            local_player.set_direction_movement(player::direction_move::forward);
-        if (utilities::is_key_present(68) || utilities::is_key_present(100))
-            local_player.set_direction_movement(player::direction_move::to_the_right);
-        if (utilities::is_key_present(83) || utilities::is_key_present(115))
-            local_player.set_direction_movement(player::direction_move::back);
-        if (utilities::is_key_present(65) || utilities::is_key_present(97))
-            local_player.set_direction_movement(player::direction_move::to_the_left);
+        local_player.move_handler();
 
         local_player.rais_stamina();
+        entity::spawn_new_entity();
 
         utilities::cmd::clear();
         for (int y = 0; y < screen_size.y; y++)
@@ -119,7 +103,7 @@ void draw_main_level()
 
         for (int i = 0; i < entity_list.size(); i++)
         {
-            if (entity_list[i].time_creat + entity_list[i].time_to_rotten <= game_tick)
+            if (entity_list[i].is_food_ruined())
                 entity_list[i].is_dangerous = true;
 
             if (entity_list[i].entity_position == local_player.player_position)
@@ -129,7 +113,7 @@ void draw_main_level()
                 else
                     local_player.eats_food();
 
-                entity_list.erase(entity_list.begin() + i);
+                entity::remove_entity(i);
                 continue;
             }
 

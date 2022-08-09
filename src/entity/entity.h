@@ -21,5 +21,11 @@ public:
      */
     void draw_entity();
 
+    bool is_food_ruined();
+
+    static void remove_entity(int index);
+
+    static void spawn_new_entity();
+
     vector2 generate_random_spawn_position();
 };

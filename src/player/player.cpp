@@ -19,6 +19,23 @@ void player::rais_stamina()
     this->stamina -= this->speed_devastation_stamina;
 }
 
+void player::move_handler()
+{
+    if (utilities::is_key_present(87) || utilities::is_key_present(119))
+        this->set_direction_movement(player::direction_move::forward);
+    if (utilities::is_key_present(68) || utilities::is_key_present(100))
+        this->set_direction_movement(player::direction_move::to_the_right);
+    if (utilities::is_key_present(83) || utilities::is_key_present(115))
+        this->set_direction_movement(player::direction_move::back);
+    if (utilities::is_key_present(65) || utilities::is_key_present(97))
+        this->set_direction_movement(player::direction_move::to_the_left);
+}
+
+bool player::is_dead()
+{
+    return this->health > 0;
+}
+
 void player::set_direction_movement(player::direction_move to_move)
 {
     int result_player_speed = 1;
