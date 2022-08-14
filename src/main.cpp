@@ -124,23 +124,23 @@ void draw_main_level()
 
 int main(int, char **)
 {
-    // bool eddit_setting_screen = false;
-    // while (!eddit_setting_screen)
-    // {
-    //     std::printf("Please input your cmd size...\n");
-    //     std::cin >> screen_size.x >> screen_size.y;
-    //     if (screen_size.x < 80)
-    //     {
-    //         std::printf("Sorry, minimum screen width is 80. Please enter again.\n");
-    //         utilities::cmd::pause();
-    //         utilities::cmd::clear();
-    //         continue;
-    //     }
-    //     input_cmd_yes_or_no("Is his screen size " + std::to_string(screen_size.x) + "x" + std::to_string(screen_size.y) + " exactly right ?", &eddit_setting_screen);
-    //     if (eddit_setting_screen && (screen_size.x % 2 != 0))
-    //         screen_size.y += 1;
-    // }
-    // utilities::cmd::clear();
-    // draw_main_menu();
+    bool eddit_setting_screen = false;
+    while (!eddit_setting_screen)
+    {
+        std::printf("Please input your cmd size...\n");
+        std::cin >> screen_size.x >> screen_size.y;
+        if (screen_size.x < 80)
+        {
+            std::printf("Sorry, minimum screen width is 80. Please enter again.\n");
+            utilities::cmd::pause();
+            utilities::cmd::clear();
+            continue;
+        }
+        input_cmd_yes_or_no("Is his screen size " + std::to_string(screen_size.x) + "x" + std::to_string(screen_size.y) + " exactly right ?", &eddit_setting_screen);
+        if (eddit_setting_screen && (screen_size.x % 2 != 0))
+            screen_size.y += 1;
+    }
+    utilities::cmd::clear();
+    draw_main_menu();
     draw_main_level();
 }
